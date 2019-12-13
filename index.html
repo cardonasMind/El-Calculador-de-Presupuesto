@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>EL CALCULADOR de Presupuesto</title>
+
+    <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+    <header>
+        <h1 id="site-title">Presupuesto</h1>
+        <h1 id="general-budget">0</h1>
+        <div id="general">
+            <div id="income-container">
+                <h2>+ </h2><h2 id="general-income">0</h2>
+            </div>
+            <div id="expenses-container">
+                <h2>- </h2><h2 id="general-expenses">0</h2>
+            </div>
+        </div>
+        <div id="header-overlay"></div>
+    </header>
+
+    <div id="add-item-container">
+        <select id="type-input">
+            <option value="inc">+</option>
+            <option value="exp">-</option>
+        </select>
+        <input id="description-input" type="text" placeholder="Descripción" />
+        <input id="value-input" type="number" placeholder="Valor" />
+        <button id="add-item-button">Aceptar</button>
+    </div>
+
+    <main>
+        <div id="income-list-container">
+            <h2>Ingresos</h2>
+
+            <div id="income-list">
+                <!--<div class="item-container">
+                    <h3 class="item-description">Descripción</h3>
+                    <p class="item-value">400.400</p>
+                    <span class="delete-item">X Borrar</span>
+                </div>-->
+            </div>
+            
+        </div>
+
+        <div id="expenses-list-container">
+            <h2>Gastos</h2>
+
+            <div id="expenses-list"></div>
+            <!--<div class="expenses-item">
+                <h3 class="expenses-item-description">Descripción</h3>
+                <p class="expenses-item-value">- 200.400</p>
+            </div>
+
+            <div class="expenses-item">
+                <h3 class="expenses-item-description">Descripción</h3>
+                <p class="expenses-item-value">- 200.400</p>
+            </div>
+
+            <div class="expenses-item">
+                <h3 class="expenses-item-description">Descripción</h3>
+                <p class="expenses-item-value">- 200.400</p>
+            </div>-->
+        </div>
+    </main>
+
+    <script src="assets/js/scripts.js"></script>
+</body>
+</html>

@@ -1,0 +1,181 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-family: Arial;
+    font-weight: 400;
+}
+
+/* 
+    PRINCIPAL HEADER 
+*/
+
+header {
+    background-image: url('../images/principal-header.webp');
+    background-size: cover;
+    padding: 4em 2em;
+    display: grid;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+   
+}
+
+header #site-title{
+    font-size: 3em;
+    color: rgb(255, 255, 255);
+    font-weight: bold;
+    letter-spacing: 14px;
+}
+
+header #general-budget {
+    color: white;
+    margin: 4px 0px 16px 0px;
+}
+
+header #income-container, #expenses-container {
+    padding: .4em;
+    color: white;
+    border: 1px dashed black;
+    max-width: 80%;
+    margin: 4px auto;
+}
+
+header #income-container h2, #expenses-container h2 {
+    display: inline;
+}
+
+header #income-container {
+    background: rgb(8, 207, 98);
+}
+
+header #expenses-container {
+    background: rgb(218, 73, 48);
+}
+
+header #header-overlay {
+    background: linear-gradient(rgba(255, 255, 255, .2), rgba(0, 0, 0, .8));
+    z-index: -1;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+/* 
+    ADD NEW ITEM 
+*/
+
+#add-item-container {
+    background: rgb(193, 245, 189);
+    transition: .4s all;
+    display: flex;
+    justify-content: center;
+    padding: 1em 2em;
+}
+
+#add-item-container input, select, button {
+    padding: .4em;
+    margin: 0 2px;
+}
+
+#add-item-container button {
+    background: rgb(8, 127, 207);
+    padding: .4em;
+    font-weight: bold;
+    border: 1px solid black;
+    padding: .4em 1em;
+    color: white;
+}
+
+#add-item-container button:hover {
+    background: rgb(5, 66, 107);
+}
+
+/* 
+    PRINCIPAL SECTION 
+*/
+
+main {
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: 1fr 1fr;
+    margin: 2em 4em;
+}
+
+main #income-list-container, #expenses-list-container {
+    border: 1px dashed black;
+    padding: .8em;
+}
+
+main .item-container {
+    border: 1px dashed black;
+    margin: 4px 20px;
+    padding: 1em;
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    align-items: center;
+}
+
+main .item-container:hover > .delete-item {
+    opacity: 1;
+    transition: 1s all;
+    padding: 4px 10px;
+}
+
+main .item-container .delete-item {
+    padding: 4px 0;
+    background: rgb(218, 73, 48);
+    color: white;
+    opacity: 0;
+    margin-left: 8px;
+}
+
+main .item-container .delete-item:hover {
+    background: rgb(136, 46, 30);
+}
+
+main .item-container:nth-child(2n) {
+    background: rgb(243, 243, 243);
+}
+
+/* Income */
+main #income-list-container h2 {
+    color: rgb(8, 207, 98);
+    margin-bottom: 10px;
+}
+
+main #income-list-container #income-list {
+    max-height: 40vh;
+    overflow: auto;
+}
+
+main #income-list-container #income-list .item-container .item-value:before {
+    content: "+ "
+}
+
+main #income-list-container #income-list .item-container .item-value {
+    color: rgb(8, 207, 98);
+    text-align: right;
+}
+
+/* Expenses */
+main #expenses-list-container h2 {
+    color: rgb(218, 73, 48);
+    margin-bottom: 10px;
+}
+
+main #expenses-list-container #expenses-list {
+    max-height: 40vh;
+    overflow: auto;
+}
+
+main #expenses-list-container #expenses-list .item-container .item-value:before {
+    content: "- "
+}
+
+main #expenses-list-container #expenses-list .item-container .item-value {
+    color: rgb(218, 73, 48);
+    text-align: right;
+}
