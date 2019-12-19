@@ -3,30 +3,24 @@ const budgetController = (function () {
     // This variable contains the general data
     var general = {
         budget: 0,
-        income: 0,
-        expenses: 0
+        inc: 0,
+        exp: 0
     }
 
     // This variable contains every income and expenses item and the total of that
     var data = {
         inc: {
-            total: 0,
+            lastId: 0,
             items: []
         },
         exp: {
-            total: 0,
+            lastId: 0,
             items: []
         },
         totalItems: 0
     }
 
-    const Income = function(id, description, value) {
-        this.id = id,
-        this.description = description,
-        this.value = value;
-    }
-
-    const Expenses = function(id, description, value) {
+    const Item = function(id, description, value) {
         this.id = id,
         this.description = description,
         this.value = value;
@@ -35,50 +29,54 @@ const budgetController = (function () {
     return {
         // This functions update the general income or expenses
         updateMoney: function(values, moneyUI) {
-            if(values.type === "inc") {
-                general.income += values.value;
-                moneyUI(values);
-            } else {
-                general.expenses -= values.value;
-                moneyUI(values);
-            }
+			// Check if the values got from removeItem
+			if(values.removeItem) {
+				if(values.type === "inc") {
+                general[values.type] -= values.value;
+				} else {
+					general[values.type] += values.value;
+				}
+			} else {
+				if(values.type === "inc") {
+                general[values.type] += values.value;
+				} else {
+					general[values.type] -= values.value;
+				}
+			}
+            moneyUI(values);
         },
 
         // This function updates the budget
         updateBudget: function(budgetUI) {
-            budgetUI(general.budget = general.income + general.expenses);
+            budgetUI(general.budget = general.inc + general.exp);
         },
 
         // This functions add a new item
-        addItem: function(values, putNewItem) { 
-            console.log(data)
-            if(values.type === "inc") {
-                // First we create a new Income
-                const incomeItem = new Income(data.inc.total, values.description, values.value);
-                
-                // Then we put it into the items
-                data.inc.items[data.inc.total] = incomeItem;
+        addItem: function(values, putNewItem) {
+            // First we need to crate a new Item
+            const id = data[values.type].lastId;
+            const newItem = new Item(id, values.description, values.value);
 
-                // Finally we update the total incomes and the totalItems
-                data.inc.total++;
-                data.totalItems++;
+            // Then we need to insert the item in its respective items array
+            data[values.type].items[id] = newItem;
 
-                // Now we need to create the element in the UI
-                putNewItem(values.type, data.inc.items[data.inc.total-1])
-            } else {
-                // First we create a new Income
-                const expensesItem = new Expenses(data.inc.total, values.description, values.value);
-                
-                // Then we put it into the items
-                data.exp.items[data.exp.total] = expensesItem;
+            // Finally we update some stuffs and then we insert the item in UI
+            data[values.type].lastId++;
+            data.totalItems++;
 
-                // Finally we update the total expenses and the totalItems
-                data.exp.total++;
-                data.totalItems++;
+            putNewItem(values.type, data[values.type].items[id]);
+        },
 
-                // Now we need to create the element in the UI
-                putNewItem(values.type, data.exp.items[data.exp.total-1])
-            }
+        // Remove an item from the data
+        removeItem: function(itemId, itemType) {
+            // For delete an element from the budget we need to find the index in the array of the id
+
+            // 1. First we delete the item from the data and update some things
+			const ids = data[itemType].items.map(current => current.id);
+			const itemIndex = ids.indexOf(itemId);
+			
+			data[itemType].items.splice(itemIndex, 1);
+			data.totalItems--;
         }
     }
 })()
@@ -143,11 +141,21 @@ const UIController = (function() {
 
         // Function for update the general income or expenses
         updateMoneyUI: function(money) {
-            if(money.type === "inc") {
-                DOMElements.generalIncome.innerText = parseFloat(DOMElements.generalIncome.innerText) + money.value;
-            } else {
-                DOMElements.generalExpenses.innerText = parseFloat(DOMElements.generalExpenses.innerText) + money.value;
-            }
+			// Check if the values got from removeItem
+			if(money.removeItem) {
+				if(money.type === "inc") {
+					DOMElements.generalIncome.innerText = parseFloat(DOMElements.generalIncome.innerText) - money.value;
+				} else {
+					DOMElements.generalExpenses.innerText = parseFloat(DOMElements.generalExpenses.innerText) - money.value;
+				}
+			} else {
+				if(money.type === "inc") {
+					DOMElements.generalIncome.innerText = parseFloat(DOMElements.generalIncome.innerText) + money.value;
+				} else {
+					DOMElements.generalExpenses.innerText = parseFloat(DOMElements.generalExpenses.innerText) + money.value;
+				}
+			}
+            
         },
 
         // Function for update the general budget
@@ -155,10 +163,14 @@ const UIController = (function() {
             DOMElements.generalBudget.innerText = budget;
         },
 
+        // Convert a number into Colombia money (0.000.000) (FOR LATER)
+
         // This function is for insert the item into the DOM
         putNewItem: function(type, item) {
-            // This object contains the structure of every item
-            const itemStructure = {
+            /* That so useless and now (15/12/2019) I know another method to add all those stuffs in the DOM 
+            and it´s using a string and then replacing some default things like description and value */
+            // This object contains the structure of every item 
+           const itemStructure = {
                 item: document.createElement('div'),
                 description: document.createElement('h3'),
                 value: document.createElement('p'),
@@ -176,21 +188,26 @@ const UIController = (function() {
 
             itemStructure.deleteItem.innerText = "X Borrar";
             itemStructure.deleteItem.classList.add('delete-item');
-            itemStructure.deleteItem.onclick = (e) => {
-                DOMElements.incomeList.removeChild(e.path[1]);
-            }
 
             itemStructure.item.appendChild(itemStructure.description);
             itemStructure.item.appendChild(itemStructure.value);
             itemStructure.item.appendChild(itemStructure.deleteItem);
 
             if(type === "inc") {
+                // Adding an id for select the item after most easily
+                itemStructure.item.id = `inc-${item.id}`;
                 // Here we put the item into the list
                 DOMElements.incomeList.insertBefore(itemStructure.item, DOMElements.incomeList.childNodes[0]);
             } else {
+                itemStructure.item.id = `exp-${item.id}`;
                 DOMElements.expensesList.insertBefore(itemStructure.item, DOMElements.expensesList
                     .childNodes[0]);
             }
+        },
+
+        removeItemUI: function(itemId) {
+            const item = document.getElementById(itemId)
+            item.parentNode.removeChild(item);
         }
     }
 })()
@@ -205,15 +222,6 @@ const controller = (function (budgetController, UIController) {
 
     // Convert an number into a "0.000.000" number (like Colombia money)
     //const numberTo
-
-    // This function change the background color of #add-item-container
-    DOMElements.typeInput.onchange = e => {
-        if(e.target.value === "inc") {
-            DOMElements.addItemContainer.style.backgroundColor = "rgb(193, 245, 189)";
-        } else {
-            DOMElements.addItemContainer.style.backgroundColor = "rgb(245, 189, 189)";
-        }
-    }
 
     // Function for create a new item (item income or expenses)
     const addNewItem = e => {
@@ -231,6 +239,45 @@ const controller = (function (budgetController, UIController) {
         budgetController.addItem(values, UIController.putNewItem);
     }
 
+    // Remove an item
+    const removeItem = (item) => {
+        // Check if press a delete button
+        if(item.target.textContent === "X Borrar") {
+            // 1. Get the id of the item
+            const fullItemId = item.path[1].id;
+            const fullItemIdParts = fullItemId.split('-');
+            const itemType = fullItemIdParts[0];
+            const itemId = Number(fullItemIdParts[1]);
+
+			// 2. Now we need to delete it from the budget
+            budgetController.removeItem(itemId, itemType);
+			
+			// 3. Then we need to update the inc or exp
+			const values = {
+				removeItem: true,
+				type: itemType,
+                value: Number(item.path[1].children[1].innerText)
+			}
+			budgetController.updateMoney(values, UIController.updateMoneyUI);
+			
+			// 4. Then we need to upate the general buget
+			budgetController.updateBudget(UIController.updateBudgetUI);
+
+            // 3. An finally we delete the item from the DOM
+            UIController.removeItemUI(fullItemId);
+        }
+    }
+
+    // This function change the background color of #add-item-container
+    DOMElements.typeInput.onchange = e => {
+        if(e.target.value === "inc") {
+            DOMElements.addItemContainer.style.backgroundColor = "rgb(193, 245, 189)";
+        } else {
+            DOMElements.addItemContainer.style.backgroundColor = "rgb(245, 189, 189)";
+        }
+    }
+
+    // Evnt listener for the "Aceptar" button and the Enter key
     DOMElements.addItemButton.onclick = addNewItem;
     document.addEventListener('keypress', function(e) {
         if(e.keyCode === 13 || e.which === 13) {
@@ -238,7 +285,7 @@ const controller = (function (budgetController, UIController) {
         }
     });
 
-    // Remove an item
-    
+    // Setting an event listener for remove an item
+    document.addEventListener('click', function(e) {removeItem(e)})
 
 })(budgetController, UIController)

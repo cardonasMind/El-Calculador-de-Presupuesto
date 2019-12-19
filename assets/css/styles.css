@@ -118,6 +118,10 @@ main .item-container {
     align-items: center;
 }
 
+main .item-container .item-description {
+    word-break: break-word;
+}
+
 main .item-container:hover > .delete-item {
     opacity: 1;
     transition: 1s all;
