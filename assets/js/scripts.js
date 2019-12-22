@@ -48,7 +48,7 @@ const budgetController = (function () {
 
         // This function updates the budget
         updateBudget: function(budgetUI) {
-            budgetUI(general.budget = general.inc + general.exp);
+            budgetUI(general, general.budget = general.inc + general.exp);
         },
 
         // This functions add a new item
@@ -125,6 +125,20 @@ const UIController = (function() {
         incomeList: document.getElementById(ids.incomeList),
         expensesList: document.getElementById(ids.expensesList)
     }
+	
+	
+    // Convert a number into Colombia money (0.000.000) (Now I´m using ES6, why not xd)
+	const convertToMoney = money => {
+		// money to absolute number in case of + or - in money
+		money = parseInt(Math.abs(money)).toString();
+		
+		if(money.length > 6) {
+			money = `${money.substring(0, money.length - 6)}.${money.substring(money.length - 6, money.length - 3)}.${money.substring(money.length - 3, money.length)}`;
+		} else if(money.length > 3) {
+			money = `${money.substring(0, money.length - 3)}.${money.substring(money.length - 3, money.length)}`;
+		}
+		return money;
+	}
 
     return {
         ids,
@@ -132,38 +146,55 @@ const UIController = (function() {
 
         // Function for get the values of the inputs
         getNewItem: function(e) {
+			const description = DOMElements.descriptionInput.value
+			const value = Math.round(DOMElements.valueInput.value)
+			
+			DOMElements.descriptionInput.value = "";
+			DOMElements.valueInput.value = "";
             return {
                 type: DOMElements.typeInput.value,
-                description: DOMElements.descriptionInput.value,
-                value: Number(DOMElements.valueInput.value)
+                description,
+                value
             }
         },
 
         // Function for update the general income or expenses
         updateMoneyUI: function(money) {
+			// For remove the value, we need to convert the actual innerText with is 0.000.000 to 0000000
+			let convertedIncome = Number(DOMElements.generalIncome.innerText.replace('.', '').replace('.', ''));
+			let convertedExpenses = Number(DOMElements.generalExpenses.innerText.replace('.', '').replace('.', ''));
+					
 			// Check if the values got from removeItem
 			if(money.removeItem) {
 				if(money.type === "inc") {
-					DOMElements.generalIncome.innerText = parseFloat(DOMElements.generalIncome.innerText) - money.value;
+					DOMElements.generalIncome.innerText = convertToMoney(convertedIncome - money.value)
 				} else {
-					DOMElements.generalExpenses.innerText = parseFloat(DOMElements.generalExpenses.innerText) - money.value;
+					DOMElements.generalExpenses.innerText = convertToMoney(convertedExpenses - money.value)
 				}
 			} else {
 				if(money.type === "inc") {
-					DOMElements.generalIncome.innerText = parseFloat(DOMElements.generalIncome.innerText) + money.value;
+					DOMElements.generalIncome.innerText = convertToMoney(convertedIncome + money.value);
 				} else {
-					DOMElements.generalExpenses.innerText = parseFloat(DOMElements.generalExpenses.innerText) + money.value;
+					DOMElements.generalExpenses.innerText = convertToMoney(convertedExpenses + money.value);
 				}
 			}
             
         },
 
         // Function for update the general budget
-        updateBudgetUI: function(budget) {
-            DOMElements.generalBudget.innerText = budget;
+        updateBudgetUI: function(generalData, updatedBudget) {
+			const absoluteInc = Math.abs(generalData.inc);
+			const absoluteExp = Math.abs(generalData.exp);
+			
+			if(absoluteInc > absoluteExp) {
+				DOMElements.generalBudget.innerText = `+ ${convertToMoney(updatedBudget)}`;
+			} else if(absoluteExp > absoluteInc){
+				DOMElements.generalBudget.innerText = `- ${convertToMoney(updatedBudget)}`;
+			} else {
+				DOMElements.generalBudget.innerText = convertToMoney(updatedBudget);
+			}
+            //DOMElements.generalBudget.innerText = convertToMoney(updatedBudget);
         },
-
-        // Convert a number into Colombia money (0.000.000) (FOR LATER)
 
         // This function is for insert the item into the DOM
         putNewItem: function(type, item) {
@@ -183,7 +214,7 @@ const UIController = (function() {
             itemStructure.description.innerText = item.description;
             itemStructure.description.classList.add('item-description');
 
-            itemStructure.value.innerText = item.value;
+            itemStructure.value.innerText = convertToMoney(item.value);
             itemStructure.value.classList.add('item-value');
 
             itemStructure.deleteItem.innerText = "X Borrar";
@@ -220,14 +251,11 @@ const controller = (function (budgetController, UIController) {
         Functions
     */
 
-    // Convert an number into a "0.000.000" number (like Colombia money)
-    //const numberTo
-
     // Function for create a new item (item income or expenses)
     const addNewItem = e => {
         // First we get the data
         const values = UIController.getNewItem(e);
-
+		
         // Then we pass the data type and value to the budgetController for update the general-income 
         // or general-expenses
         budgetController.updateMoney(values, UIController.updateMoneyUI);
@@ -252,11 +280,16 @@ const controller = (function (budgetController, UIController) {
 			// 2. Now we need to delete it from the budget
             budgetController.removeItem(itemId, itemType);
 			
-			// 3. Then we need to update the inc or exp
+			// 3. Then we need to update the inc or exp, but firt we need to conver the value into a normal number (0.000.000 > 0000000)
+			let money = item.path[1].children[1].innerText;
+			
+			money = money.replace('.', '');
+			money = money.replace('.', '');
+			
 			const values = {
 				removeItem: true,
 				type: itemType,
-                value: Number(item.path[1].children[1].innerText)
+                value: Number(money)
 			}
 			budgetController.updateMoney(values, UIController.updateMoneyUI);
 			
