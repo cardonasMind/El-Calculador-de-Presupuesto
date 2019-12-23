@@ -202,6 +202,7 @@ main #expenses-list-container #expenses-list .item-container .item-value {
 		display: grid;
 		grid-template-columns: auto auto auto;
 		margin-bottom: 1em;
+		oveflow: hidden;
 	}
 	
 	#add-item-container button {
