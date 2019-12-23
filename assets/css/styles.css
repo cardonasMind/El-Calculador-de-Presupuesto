@@ -3,6 +3,7 @@
     padding: 0;
     font-family: Arial;
     font-weight: 400;
+	box-sizing: border-box;
 }
 
 /* 
@@ -188,7 +189,7 @@ main #expenses-list-container #expenses-list .item-container .item-value {
 
 @media (max-width: 540px) {
 	* {
-		font-size: 1em;
+		font-size: 1.4em
 	}
 	
 	header #site-title {
