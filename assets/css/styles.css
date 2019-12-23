@@ -1,24 +1,3 @@
-/* MEDIA QUERYS */
-
-@media (max-width: 540px) {
-	* {
-		font-size: .8em;
-	}
-	
-	header #site-titld {
-		font-size: 2em;
-	}
-}
-
-
-
-
-
-
-/*
-	GENERAL STYLE
-*/
-
 * {
     margin: 0;
     padding: 0;
@@ -90,7 +69,8 @@ header #header-overlay {
 #add-item-container {
     background: rgb(193, 245, 189);
     transition: .4s all;
-    display: flex;
+    display: grid;
+	grid-template-columns: auto auto auto auto;
     justify-content: center;
     padding: 1em 2em;
 }
@@ -202,4 +182,26 @@ main #expenses-list-container #expenses-list .item-container .item-value:before 
 main #expenses-list-container #expenses-list .item-container .item-value {
     color: rgb(218, 73, 48);
     text-align: right;
+}
+
+/* MEDIA QUERYS */
+
+@media (max-width: 540px) {
+	header #site-titld {
+		font-size: 2em;
+	}
+	
+	#add-item-container {
+		display: block;
+	}
+	
+	#add-item-container #principal-group {
+		display: grid;
+		grid-template-columns: auto auto auto;
+		margin-bottom: 1em;
+	}
+	
+	#add-item-container button {
+		width: 100%;
+	}
 }
