@@ -188,8 +188,13 @@ main #expenses-list-container #expenses-list .item-container .item-value {
 /* MEDIA QUERYS */
 
 @media (max-width: 540px) {
+	header {
+		padding: 1em 2em;
+	}
+	
 	header #site-title, #general-budget {
 		font-size: 2em;
+		letter-spacing: 10px;
 	}
 	
 	#add-item-container {
