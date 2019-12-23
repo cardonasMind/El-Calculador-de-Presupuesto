@@ -188,7 +188,7 @@ main #expenses-list-container #expenses-list .item-container .item-value {
 
 @media (max-width: 540px) {
 	* {
-		font-size: 1em;
+		font-size: .9em;
 	}
 	
 	#add-item-container {
