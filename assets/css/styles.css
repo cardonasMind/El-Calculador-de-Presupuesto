@@ -187,8 +187,8 @@ main #expenses-list-container #expenses-list .item-container .item-value {
 /* MEDIA QUERYS */
 
 @media (max-width: 540px) {
-	header #site-titld {
-		font-size: 2em;
+	* {
+		font-size: 1em;
 	}
 	
 	#add-item-container {
