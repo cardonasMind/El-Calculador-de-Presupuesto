@@ -200,14 +200,16 @@ main #expenses-list-container #expenses-list .item-container .item-value {
 	#add-item-container {
 		display: block;
 		font-size: 12px;
-		background: blue;
 	}
 	
 	#add-item-container #principal-group {
 		display: grid;
 		grid-template-columns: auto auto auto;
 		margin-bottom: 1em;
-		oveflow: hidden;
+	}
+	
+	#add-item-container #principal-group input{
+		min-width: 0;
 	}
 	
 	#add-item-container button {
