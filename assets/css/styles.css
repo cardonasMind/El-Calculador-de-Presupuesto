@@ -192,10 +192,16 @@ main #expenses-list-container #expenses-list .item-container .item-value {
 		padding: 1em 2em;
 	}
 	
-	header #site-title, #general-budget {
+	header #site-title {
 		font-size: 2em;
 		letter-spacing: 10px;
 	}
+	
+	header #general-budget{
+		font-size: 2em;
+	}
+	
+	
 	
 	#add-item-container {
 		display: block;
@@ -214,5 +220,26 @@ main #expenses-list-container #expenses-list .item-container .item-value {
 	
 	#add-item-container button {
 		width: 100%;
+	}
+	
+	
+	
+	main {
+		margin: 1em 2em;
+	}
+	
+	main h2 {
+		font-size: 1.2em;
+	}
+	
+	main .item-container {
+		margin: 4px 10px;
+		padding: .4em;
+		grid-template-columns: 1fr 1fr;
+	}
+
+	main .item-container .delete-item {
+		opacity: 1;
+		content: "X";
 	}
 }
