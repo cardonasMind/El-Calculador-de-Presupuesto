@@ -235,10 +235,16 @@ main #expenses-list-container #expenses-list .item-container .item-value {
 	main .item-container {
 		margin: 4px 10px;
 		padding: .4em;
-		grid-template-columns: 1fr 1fr;
+		grid-template-columns: 1fr;
+		grid-gap: 10px;
 	}
 
 	main .item-container .delete-item {
 		opacity: 1;
+		text-align: center;
+	}
+	
+	main .item-container .item-value{
+		text-align: initial !important;
 	}
 }
